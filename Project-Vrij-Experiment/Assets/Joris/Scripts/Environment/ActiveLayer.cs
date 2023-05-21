@@ -17,12 +17,10 @@ public class ActiveLayer : MonoBehaviour
     GameObject LayerPH;
 
     PlayerMovement _Player;
-    CubeManager _CubeManager;
     PlayerSanityManager _SanityManager;
     private void Awake()
     {
         _Player = FindObjectOfType<PlayerMovement>();
-        _CubeManager = FindObjectOfType<CubeManager>();
         _SanityManager = FindObjectOfType<PlayerSanityManager>();
     }
 
@@ -32,13 +30,16 @@ public class ActiveLayer : MonoBehaviour
 
         if(_SanityManager.Sanity == 0)
         {
-            LayerStick();
+            StartCoroutine(LayerStick());
         }
     }
 
-    void LayerStick()
+    IEnumerator LayerStick()
     {
-        if (layerActive && _CubeManager.isRotating)
-            _Player.transform.parent = LayerPH.transform;
+        _Player.transform.parent = LayerPH.transform;
+
+        yield return new WaitForSeconds(1);
+
+        _Player.transform.parent = null;
     }
 }

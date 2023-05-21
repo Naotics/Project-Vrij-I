@@ -5,6 +5,7 @@ using UnityEngine;
 public class PlayerMovement : MonoBehaviour
 {
     public bool isAbleToMove;
+    public bool isGrounded;
 
     Rigidbody rb;
 
@@ -17,9 +18,23 @@ public class PlayerMovement : MonoBehaviour
     {
         if (isAbleToMove)
             rb.constraints = RigidbodyConstraints.FreezeRotation;
-        else
-        {
+        else 
             rb.constraints = RigidbodyConstraints.FreezeRotation | RigidbodyConstraints.FreezePosition;
-        } 
+    }
+
+    public void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject.layer == LayerMask.NameToLayer("Water"))
+        {
+            isGrounded = true;
+        }
+    }
+
+    public void OnTriggerExit(Collider other)
+    {
+        if (other.gameObject.layer == LayerMask.NameToLayer("Water"))
+        {
+            isGrounded = false;
+        }
     }
 }

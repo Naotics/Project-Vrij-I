@@ -29,7 +29,7 @@ public class PlayerSanityManager : MonoBehaviour
         if (Sanity == 0)
         {
             PickRandomFunction();
-            Sanity = 3;
+            StartCoroutine(ResetSanity());
         }
     }
 
@@ -46,6 +46,12 @@ public class PlayerSanityManager : MonoBehaviour
             StartCoroutine(SanityRotateThree());
         if (number == 4)
             StartCoroutine(SanityRotateFour());
+    }
+
+    IEnumerator ResetSanity()
+    {
+        yield return new WaitForSeconds(1);
+        Sanity = 3;
     }
 
     IEnumerator SanityRotateOne()
