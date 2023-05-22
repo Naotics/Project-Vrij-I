@@ -5,6 +5,7 @@ using UnityEngine;
 public class EnemyHitDetection : MonoBehaviour
 {
     PlayerSanityManager _SanityManager;
+    public GameObject canvas;
 
     private void Awake()
     {
@@ -15,7 +16,7 @@ public class EnemyHitDetection : MonoBehaviour
     {
         if (other.gameObject.tag == "Player")
         {
-            _SanityManager.DecreaseSanity();
+            canvas.SetActive(true);
         }
     }
 }
