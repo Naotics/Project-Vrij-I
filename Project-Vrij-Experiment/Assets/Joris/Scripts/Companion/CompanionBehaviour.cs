@@ -35,7 +35,7 @@ public class CompanionBehaviour : MonoBehaviour
     private void Awake()
     {
         _Player = FindObjectOfType<PlayerMovement>();
-        _Companion = FindObjectOfType<NavMeshAgent>();
+        _Companion = GetComponent<NavMeshAgent>();
     }
 
     private void Start()
