@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
-    public bool isAbleToMove;
     public bool isGrounded;
 
     Rigidbody rb;
@@ -12,14 +11,7 @@ public class PlayerMovement : MonoBehaviour
     private void Awake()
     {
         rb = GetComponent<Rigidbody>();
-    }
-
-    private void Update()
-    {
-        if (isAbleToMove)
-            rb.constraints = RigidbodyConstraints.FreezeRotation;
-        else 
-            rb.constraints = RigidbodyConstraints.FreezeRotation | RigidbodyConstraints.FreezePosition;
+        rb.constraints = RigidbodyConstraints.FreezeRotation;
     }
 
     public void OnTriggerEnter(Collider other)
