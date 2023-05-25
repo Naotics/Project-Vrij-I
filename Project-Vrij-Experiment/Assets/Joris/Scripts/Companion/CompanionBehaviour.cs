@@ -5,10 +5,12 @@ using UnityEngine;
 
 public class CompanionBehaviour : MonoBehaviour
 {
-    private enum StateEnum { Roaming, Walking }
-    private StateEnum state;
+    private enum WalkingBehaviour { Roaming, Walking }
+    private WalkingBehaviour walking;
+    public enum SwitchDirections { Positive, Negative }
+    public SwitchDirections direction;
 
-    [Header("Dots")]
+    [Header("Companion")]
     public Transform[] Dots;
     public GameObject DotsHolder;
     private int dotAmount;
@@ -21,21 +23,27 @@ public class CompanionBehaviour : MonoBehaviour
     private int checkPointAmount;
     private int pointInArray;
 
-    [Header("variables")]
+    [Header("Variables")]
+    public bool isPanicked;
+    public float walkingSpeed;
+    public float panickedSpeed;
     public float SearchingRange;
+
     private bool isMoving;
     private bool isLatched;
-    public bool isPanicked;
     private bool isTrackingPlayer;
+    private bool changeDirections;
 
     [Header("Trackables")]
-    PlayerMovement _Player;
+    PlayerBehaviour _Player;
     NavMeshAgent _Companion;
 
     private void Awake()
     {
-        _Player = FindObjectOfType<PlayerMovement>();
+        _Player = FindObjectOfType<PlayerBehaviour>();
         _Companion = GetComponent<NavMeshAgent>();
+
+        _Companion.speed = walkingSpeed;
     }
 
     private void Start()
@@ -62,10 +70,10 @@ public class CompanionBehaviour : MonoBehaviour
 
     void Update()
     {
-        switch (state)
+        switch (walking)
         {
-            case StateEnum.Roaming: Roaming(); break;
-            case StateEnum.Walking: Walking(); break;
+            case WalkingBehaviour.Roaming: Roaming(); break;
+            case WalkingBehaviour.Walking: Walking(); break;
         }
     }
 
@@ -73,21 +81,23 @@ public class CompanionBehaviour : MonoBehaviour
     {
         MoveToClosestDot();
         MoveToNextDot();
+        SwitchDirection();
 
         if (Vector3.Distance(_Player.transform.position, transform.position) < SearchingRange)
         {
-            state = StateEnum.Walking;
+            walking = WalkingBehaviour.Walking;
             MoveToPlayer();
         }
     }
 
     void Walking()
     {
-        Invoke("MoveToNextCheckPoint", 1f);
+        MoveToNextCheckPoint();
 
         if (Vector3.Distance(_Player.transform.position, transform.position) > SearchingRange && isPanicked)
         {
-            state = StateEnum.Roaming;
+            walking = WalkingBehaviour.Roaming;
+            _Companion.ResetPath();
             isLatched = false;
             isMoving = false;
         }
@@ -118,6 +128,11 @@ public class CompanionBehaviour : MonoBehaviour
         {
             isMoving = true;
 
+            _Companion.speed = panickedSpeed;
+
+            if (isPanicked)
+                pointInArray -= 1;
+
             Vector3 newDestination = GetClosestDot(Dots).transform.position;
             _Companion.SetDestination(newDestination);
 
@@ -127,10 +142,8 @@ public class CompanionBehaviour : MonoBehaviour
 
     void MoveToNextDot()
     {
-        if(!isMoving && isLatched)
+        if (!isMoving && isLatched && !isPanicked)
         {
-            isMoving = true;
-
             _Companion.ResetPath();
 
             RunThroughArrayDots();
@@ -140,12 +153,14 @@ public class CompanionBehaviour : MonoBehaviour
             if (_Companion.pathPending)
                 StopAllCoroutines();
                 StartCoroutine(CheckPathEnd());
+
+            isMoving = true;
         }
     }
 
-    IEnumerator CheckPathEnd() 
+    IEnumerator CheckPathEnd()
     {
-        yield return new WaitForSeconds(1);
+        yield return new WaitForSeconds(0.2f);
 
         if (!isLatched)
         {
@@ -182,13 +197,11 @@ public class CompanionBehaviour : MonoBehaviour
 
     void RunThroughArrayDots()
     {
-        int random = 1; //Random.Range(1, 3);
-
-        if (random == 1)
-            if (placeInArray == dotAmount-1)
-                placeInArray = 0;
-            else
-                placeInArray += 1;
+        switch (direction)
+        {
+            case SwitchDirections.Positive: Positive(); break;
+            case SwitchDirections.Negative: Negative(); break;
+        }
     }
 
     void MoveToPlayer()
@@ -203,7 +216,7 @@ public class CompanionBehaviour : MonoBehaviour
 
         if (_Companion.pathPending)
             StopAllCoroutines();
-            StartCoroutine(CheckPathEnd());
+        StartCoroutine(CheckPathEnd());
     }
 
     void MoveToNextCheckPoint()
@@ -212,6 +225,7 @@ public class CompanionBehaviour : MonoBehaviour
         {
             isMoving = true;
 
+            _Companion.speed = walkingSpeed;
             _Companion.ResetPath();
 
             Vector3 newDestination = Checkpoint[pointInArray].transform.position;
@@ -220,7 +234,7 @@ public class CompanionBehaviour : MonoBehaviour
 
             if (_Companion.pathPending)
                 StopAllCoroutines();
-                StartCoroutine(CheckPathEnd());
+            StartCoroutine(CheckPathEnd());
         }
     }
 
@@ -228,7 +242,79 @@ public class CompanionBehaviour : MonoBehaviour
     {
         pointInArray += 1;
 
-        if(pointInArray == checkPointAmount)
+        if (pointInArray == checkPointAmount)
             pointInArray = 0;
+    }
+
+    void SwitchDirection()
+    {
+        if (isPanicked && isLatched)
+        {
+            isMoving = true;
+            isPanicked = false;
+            changeDirections = true;
+
+            _Companion.ResetPath();
+
+            switch (direction)
+            {
+                case SwitchDirections.Positive: Positive(); break;
+                case SwitchDirections.Negative: Negative(); break;
+            }
+
+            Vector3 newDestination = Dots[placeInArray].transform.position;
+            _Companion.SetDestination(newDestination);
+
+            if (_Companion.pathPending)
+                StopAllCoroutines();
+                StartCoroutine(CheckPathEnd());
+        }
+    }
+
+    void Positive()
+    {
+        if (changeDirections)
+        {
+            if (placeInArray == dotAmount - 1)
+                placeInArray = 0;
+            else
+                placeInArray += 1;
+
+            changeDirections = false;
+            direction = SwitchDirections.Negative;
+        }
+        else
+        {
+            if (placeInArray == 0)
+                placeInArray = dotAmount - 1;
+            else
+                placeInArray -= 1;
+        }
+    }
+
+    void Negative()
+    {
+        if (changeDirections)
+        {
+            if (placeInArray == 0)
+                placeInArray = dotAmount - 1;
+            else
+                placeInArray -= 1;
+
+            changeDirections = false;
+            direction = SwitchDirections.Positive;
+        }
+        else
+        {
+            if (placeInArray == dotAmount - 1)
+                placeInArray = 0;
+            else
+                placeInArray += 1;
+        }
+    }
+
+    public void WhenSeeingEnemy()
+    {
+        isPanicked = true;
     }
 }

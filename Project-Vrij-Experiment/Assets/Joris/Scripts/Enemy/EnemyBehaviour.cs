@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class EnemyBehaviour : MonoBehaviour
 {
-    [Header("Dots")]
+    [Header("Enemy")]
     public Transform[] Dots;
     public GameObject DotsHolder;
     private int dotAmount;
@@ -24,14 +24,17 @@ public class EnemyBehaviour : MonoBehaviour
 
     [Header("Trackables")]
     NavMeshAgent _Enemy;
-    PlayerMovement _Player;
+    PlayerBehaviour _Player;
+    CompanionBehaviour _Companion;
 
     private void Awake()
     {
         _Enemy = GetComponent<NavMeshAgent>();
-        _Player = FindObjectOfType<PlayerMovement>();
+        _Player = FindObjectOfType<PlayerBehaviour>();
+        _Companion = FindObjectOfType<CompanionBehaviour>();
 
         direction = Random.Range(0, 2);
+        DotsHolder = FindObjectOfType<RoamingDots>().transform.GetChild(1).gameObject;
     }
 
     private void Start()
@@ -147,7 +150,6 @@ public class EnemyBehaviour : MonoBehaviour
         isMoving = false;
     }
 
-
     void RunThroughArrayDots()
     {
         if (amountWalked == 3)
@@ -202,5 +204,18 @@ public class EnemyBehaviour : MonoBehaviour
             }
         }
 
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if(other.gameObject.tag == "Player")
+        {
+            _Player.DecreaseSanity();
+        }
+
+        if (other.gameObject.tag == "Companion")
+        {
+            _Companion.WhenSeeingEnemy();
+        }
     }
 }
