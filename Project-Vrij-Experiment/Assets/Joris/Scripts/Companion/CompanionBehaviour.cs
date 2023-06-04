@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class CompanionBehaviour : MonoBehaviour
 {
-    private enum WalkingBehaviour { Roaming, Walking }
+    private enum WalkingBehaviour { Idling, Roaming, Walking }
     private WalkingBehaviour walking;
     public enum SwitchDirections { Positive, Negative }
     public SwitchDirections direction;
@@ -72,8 +72,17 @@ public class CompanionBehaviour : MonoBehaviour
     {
         switch (walking)
         {
+            case WalkingBehaviour.Idling: Idling(); break;
             case WalkingBehaviour.Roaming: Roaming(); break;
             case WalkingBehaviour.Walking: Walking(); break;
+        }
+    }
+
+    void Idling()
+    {
+        if (Vector3.Distance(_Player.transform.position, transform.position) < SearchingRange)
+        {
+            walking = WalkingBehaviour.Roaming;
         }
     }
 

@@ -26,15 +26,18 @@ public class EnemyBehaviour : MonoBehaviour
     NavMeshAgent _Enemy;
     PlayerBehaviour _Player;
     CompanionBehaviour _Companion;
+    AudioSource _AudioSource;
 
     private void Awake()
     {
         _Enemy = GetComponent<NavMeshAgent>();
         _Player = FindObjectOfType<PlayerBehaviour>();
         _Companion = FindObjectOfType<CompanionBehaviour>();
+        _AudioSource = GetComponent<AudioSource>();
 
         direction = Random.Range(0, 2);
         DotsHolder = FindObjectOfType<RoamingDots>().transform.GetChild(1).gameObject;
+        transform.GetComponentInChildren<Renderer>().material.color = new Color (0,0,0,0);
     }
 
     private void Start()
@@ -48,6 +51,8 @@ public class EnemyBehaviour : MonoBehaviour
             Dots[i] = DotsHolder.transform.GetChild(i).transform;
             placeInArray = i;
         }
+
+        StartCoroutine(FadeTo(7.0f, 4.0f));
     }
 
     Transform GetClosestDot(Transform[] Dots)
@@ -100,7 +105,7 @@ public class EnemyBehaviour : MonoBehaviour
             Vector3 newDestination = Dots[placeInArray].transform.position;
             _Enemy.SetDestination(newDestination);
 
-            if (_Enemy.pathPending)
+            if (_Enemy.pathPending && !isAttacking)
                 StopAllCoroutines();
                 StartCoroutine(CheckPathEnd());
         }
@@ -135,18 +140,6 @@ public class EnemyBehaviour : MonoBehaviour
             yield return null;
         }
 
-        while (isAttacking)
-        {
-            isAttacking = false;
-
-            if (_Enemy.remainingDistance <= _Enemy.stoppingDistance)
-            {
-                Destroy(gameObject);
-            }
-
-            yield return null;
-        }
-
         isMoving = false;
     }
 
@@ -155,6 +148,8 @@ public class EnemyBehaviour : MonoBehaviour
         if (amountWalked == 3)
         {
             isAttacking = true;
+            StartCoroutine(FadeOut());
+            StartCoroutine(FadeTo(0.0f, 4.0f));
             _Enemy.speed = attackingSpeed;
 
             bool flag = true;
@@ -216,6 +211,39 @@ public class EnemyBehaviour : MonoBehaviour
         if (other.gameObject.tag == "Companion")
         {
             _Companion.WhenSeeingEnemy();
+        }
+    }
+
+    IEnumerator FadeOut()
+    {
+        _AudioSource.volume = 0.9f;
+        yield return new WaitForSeconds(0.5f);
+        _AudioSource.volume = 0.8f;
+        yield return new WaitForSeconds(0.5f);
+        _AudioSource.volume = 0.7f;
+        yield return new WaitForSeconds(0.5f);
+        _AudioSource.volume = 0.6f;
+        yield return new WaitForSeconds(0.5f);
+        _AudioSource.volume = 0.5f;
+        yield return new WaitForSeconds(0.5f);
+        _AudioSource.volume = 0.4f;
+        yield return new WaitForSeconds(0.5f);
+        _AudioSource.volume = 0.3f;
+        yield return new WaitForSeconds(0.5f);
+        _AudioSource.volume = 0.2f;
+        yield return new WaitForSeconds(0.5f);
+        _AudioSource.volume = 0.1f;
+        Destroy(gameObject);
+    }
+
+    IEnumerator FadeTo(float aValue, float aTime)
+    {
+        float alpha = transform.GetComponentInChildren<Renderer>().material.color.a;
+        for (float t = 0.0f; t < 1.0f; t += Time.deltaTime / aTime)
+        {
+            Color newColor = new Color(0, 0, 0, Mathf.Lerp(alpha, aValue, t));
+            transform.GetComponentInChildren<Renderer>().material.color = newColor;
+            yield return null;
         }
     }
 }
