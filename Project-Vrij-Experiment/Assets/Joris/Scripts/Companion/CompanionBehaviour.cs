@@ -34,6 +34,8 @@ public class CompanionBehaviour : MonoBehaviour
     private bool isTrackingPlayer;
     private bool changeDirections;
 
+    [HideInInspector] public bool isWalking;
+
     [Header("Trackables")]
     PlayerBehaviour _Player;
     NavMeshAgent _Companion;
@@ -80,6 +82,8 @@ public class CompanionBehaviour : MonoBehaviour
 
     void Idling()
     {
+        isWalking = true;
+
         if (Vector3.Distance(_Player.transform.position, transform.position) < SearchingRange)
         {
             walking = WalkingBehaviour.Roaming;
@@ -92,6 +96,8 @@ public class CompanionBehaviour : MonoBehaviour
         MoveToNextDot();
         SwitchDirection();
 
+        isWalking = false;
+
         if (Vector3.Distance(_Player.transform.position, transform.position) < SearchingRange)
         {
             walking = WalkingBehaviour.Walking;
@@ -103,7 +109,9 @@ public class CompanionBehaviour : MonoBehaviour
     {
         MoveToNextCheckPoint();
 
-        if (Vector3.Distance(_Player.transform.position, transform.position) > SearchingRange && isPanicked)
+        isWalking = true;
+
+        if (Vector3.Distance(_Player.transform.position, transform.position) > SearchingRange /*&& isPanicked*/)
         {
             walking = WalkingBehaviour.Roaming;
             _Companion.ResetPath();

@@ -16,10 +16,12 @@ public class RoamingDots : MonoBehaviour
     private float time;
 
     PlayerBehaviour _Player;
+    CompanionBehaviour _Companion;
 
     private void Awake()
     {
         _Player = FindObjectOfType<PlayerBehaviour>();
+        _Companion = FindObjectOfType<CompanionBehaviour>();
     }
 
     private void Start()
@@ -39,7 +41,8 @@ public class RoamingDots : MonoBehaviour
     {
         transform.position = _Player.transform.position;
 
-        WaveLogic();
+        if(!_Companion.isWalking)
+            WaveLogic();
     }
 
     void WaveLogic()

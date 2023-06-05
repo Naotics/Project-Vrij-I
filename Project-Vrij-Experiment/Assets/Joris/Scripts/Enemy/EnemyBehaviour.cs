@@ -216,6 +216,7 @@ public class EnemyBehaviour : MonoBehaviour
 
     IEnumerator FadeOut()
     {
+        yield return new WaitForSeconds(4f);
         _AudioSource.volume = 0.9f;
         yield return new WaitForSeconds(0.5f);
         _AudioSource.volume = 0.8f;
