@@ -33,6 +33,7 @@ public class CompanionBehaviour : MonoBehaviour
     private bool isLatched;
     private bool isTrackingPlayer;
     private bool changeDirections;
+    private bool WalkingDelay;
 
     [HideInInspector] public bool isWalking;
 
@@ -86,7 +87,7 @@ public class CompanionBehaviour : MonoBehaviour
 
         if (Vector3.Distance(_Player.transform.position, transform.position) < SearchingRange)
         {
-            walking = WalkingBehaviour.Roaming;
+            walking = WalkingBehaviour.Walking;
         }
     }
 
@@ -98,10 +99,13 @@ public class CompanionBehaviour : MonoBehaviour
 
         isWalking = false;
 
-        if (Vector3.Distance(_Player.transform.position, transform.position) < SearchingRange)
+        if (!WalkingDelay)
         {
-            walking = WalkingBehaviour.Walking;
-            MoveToPlayer();
+            if (Vector3.Distance(_Player.transform.position, transform.position) < 4)
+            {
+                walking = WalkingBehaviour.Walking;
+                MoveToPlayer();
+            }
         }
     }
 
@@ -144,6 +148,7 @@ public class CompanionBehaviour : MonoBehaviour
         if (!isMoving && !isLatched)
         {
             isMoving = true;
+            WalkingDelay = true;
 
             _Companion.speed = panickedSpeed;
 
@@ -205,6 +210,7 @@ public class CompanionBehaviour : MonoBehaviour
                 }
 
                 isLatched = true;
+                WalkingDelay = false;
                 yield return new WaitForSeconds(0.2f);
                 isMoving = false;
             }
