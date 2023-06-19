@@ -153,7 +153,8 @@ public class CompanionBehaviour : MonoBehaviour
             Vector3 newDestination = GetClosestDot(Dots).transform.position;
             _Companion.SetDestination(newDestination);
 
-            StartCoroutine(CheckPathEnd());
+            if (_Companion.pathPending)
+                StartCoroutine(CheckPathEnd());
         }
     }
 
@@ -161,17 +162,16 @@ public class CompanionBehaviour : MonoBehaviour
     {
         if (!isMoving && isLatched && !isPanicked)
         {
+            isMoving = true;
+
             _Companion.ResetPath();
 
             RunThroughArrayDots();
             Vector3 newDestination = Dots[placeInArray].transform.position;
             _Companion.SetDestination(newDestination);
 
-            if (_Companion.pathPending)
-                StopAllCoroutines();
-                StartCoroutine(CheckPathEnd());
-
-            isMoving = true;
+            StopAllCoroutines();
+            StartCoroutine(CheckPathEnd());
         }
     }
 
@@ -196,7 +196,7 @@ public class CompanionBehaviour : MonoBehaviour
             if (_Companion.remainingDistance <= _Companion.stoppingDistance)
             {
                 flag = true;
-
+                Debug.Log("Finsihed");
                 if (isTrackingPlayer)
                 {
                     isTrackingPlayer = false;

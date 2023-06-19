@@ -118,7 +118,8 @@ PrefabInstance:
       propertyPath: m_Name
       value: PF_Pillar (1)
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 550886216368186138, guid: da122698b7f9bdb4ba60f9384c54e0e2, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: da122698b7f9bdb4ba60f9384c54e0e2, type: 3}
 --- !u!4 &6265142081097227238 stripped
 Transform:
@@ -208,7 +209,8 @@ PrefabInstance:
       propertyPath: m_Name
       value: PF_Pillar (2)
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 550886216368186138, guid: da122698b7f9bdb4ba60f9384c54e0e2, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: da122698b7f9bdb4ba60f9384c54e0e2, type: 3}
 --- !u!4 &4920558867807597007 stripped
 Transform:
@@ -298,7 +300,8 @@ PrefabInstance:
       propertyPath: m_Name
       value: PF_Pillar (3)
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 550886216368186138, guid: da122698b7f9bdb4ba60f9384c54e0e2, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: da122698b7f9bdb4ba60f9384c54e0e2, type: 3}
 --- !u!4 &8316803059753017820 stripped
 Transform:
@@ -473,7 +476,8 @@ PrefabInstance:
       propertyPath: m_Name
       value: PF_Pillar
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 550886216368186138, guid: da122698b7f9bdb4ba60f9384c54e0e2, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: da122698b7f9bdb4ba60f9384c54e0e2, type: 3}
 --- !u!4 &2497411546097211137 stripped
 Transform:
