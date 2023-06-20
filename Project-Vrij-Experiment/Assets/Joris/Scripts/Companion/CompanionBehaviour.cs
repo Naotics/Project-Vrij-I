@@ -40,6 +40,7 @@ public class CompanionBehaviour : MonoBehaviour
     [Header("Trackables")]
     PlayerBehaviour _Player;
     NavMeshAgent _Companion;
+    Animator _Animator;
 
     public GameObject EndScreen;
 
@@ -47,6 +48,7 @@ public class CompanionBehaviour : MonoBehaviour
     {
         _Player = FindObjectOfType<PlayerBehaviour>();
         _Companion = GetComponent<NavMeshAgent>();
+        _Animator = GetComponentInChildren<Animator>();
 
         _Companion.speed = walkingSpeed;
     }
@@ -87,6 +89,8 @@ public class CompanionBehaviour : MonoBehaviour
     {
         isWalking = true;
 
+        _Animator.Play("Idle");
+
         if (Vector3.Distance(_Player.transform.position, transform.position) < SearchingRange)
         {
             walking = WalkingBehaviour.Walking;
@@ -100,6 +104,8 @@ public class CompanionBehaviour : MonoBehaviour
         SwitchDirection();
 
         isWalking = false;
+
+        _Animator.Play("Wave");
 
         if (!WalkingDelay)
         {
@@ -116,6 +122,8 @@ public class CompanionBehaviour : MonoBehaviour
         MoveToNextCheckPoint();
 
         isWalking = true;
+
+        _Animator.Play("Walk");
 
         if (Vector3.Distance(_Player.transform.position, transform.position) > SearchingRange /*&& isPanicked*/)
         {
