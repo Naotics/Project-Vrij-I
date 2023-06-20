@@ -27,6 +27,7 @@ public class EnemyBehaviour : MonoBehaviour
     PlayerBehaviour _Player;
     CompanionBehaviour _Companion;
     AudioSource _AudioSource;
+    Animator _Animator;
 
     private void Awake()
     {
@@ -34,6 +35,7 @@ public class EnemyBehaviour : MonoBehaviour
         _Player = FindObjectOfType<PlayerBehaviour>();
         _Companion = FindObjectOfType<CompanionBehaviour>();
         _AudioSource = GetComponent<AudioSource>();
+        _Animator = GetComponentInChildren<Animator>();
 
         direction = Random.Range(0, 2);
         DotsHolder = FindObjectOfType<RoamingDots>().transform.GetChild(1).gameObject;
@@ -78,6 +80,8 @@ public class EnemyBehaviour : MonoBehaviour
     {
         MoveToClosestDot();
         MoveToNextDot();
+
+        _Animator.Play("Walk");
     }
 
     void MoveToClosestDot()

@@ -105,7 +105,7 @@ public class CompanionBehaviour : MonoBehaviour
 
         isWalking = false;
 
-        _Animator.Play("Wave");
+        _Animator.Play("Walk");
 
         if (!WalkingDelay)
         {
