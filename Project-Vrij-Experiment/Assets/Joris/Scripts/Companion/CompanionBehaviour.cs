@@ -21,7 +21,7 @@ public class CompanionBehaviour : MonoBehaviour
     public Transform[] Checkpoint;
     public GameObject CheckpointHolder;
     private int checkPointAmount;
-    private int pointInArray;
+    public int pointInArray;
 
     [Header("Variables")]
     public bool isPanicked;
@@ -40,6 +40,8 @@ public class CompanionBehaviour : MonoBehaviour
     [Header("Trackables")]
     PlayerBehaviour _Player;
     NavMeshAgent _Companion;
+
+    public GameObject EndScreen;
 
     private void Awake()
     {
@@ -101,7 +103,7 @@ public class CompanionBehaviour : MonoBehaviour
 
         if (!WalkingDelay)
         {
-            if (Vector3.Distance(_Player.transform.position, transform.position) < 4)
+            if (Vector3.Distance(_Player.transform.position, transform.position) < 5)
             {
                 walking = WalkingBehaviour.Walking;
                 MoveToPlayer();
@@ -207,6 +209,12 @@ public class CompanionBehaviour : MonoBehaviour
                     isTrackingPlayer = false;
                     _Companion.ResetPath();
                     _Companion.stoppingDistance = 0.5f;
+                }
+
+                if (Checkpoint[pointInArray] == Checkpoint[checkPointAmount-1])
+                {
+                    yield return new WaitForSeconds(4f);
+                    EndScreen.SetActive(true);
                 }
 
                 isLatched = true;

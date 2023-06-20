@@ -4,13 +4,21 @@ using UnityEngine;
 
 public class Cutscene : MonoBehaviour
 {
-    public bool startCutscene;
+    public GameObject CutsceneHolder;
 
     private void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.tag == "Player")
         {
-            startCutscene = true;
+            CutsceneHolder.SetActive(true);
+        }
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.gameObject.tag == "Player")
+        {
+            CutsceneHolder.SetActive(false);
         }
     }
 }
