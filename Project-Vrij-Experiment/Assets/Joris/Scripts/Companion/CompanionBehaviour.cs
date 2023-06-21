@@ -266,8 +266,10 @@ public class CompanionBehaviour : MonoBehaviour
             _Companion.SetDestination(newDestination);
 
             if (_Companion.pathPending)
+            {
                 StopAllCoroutines();
-            StartCoroutine(CheckPathEnd());
+                StartCoroutine(CheckPathEnd());
+            }
         }
     }
 
