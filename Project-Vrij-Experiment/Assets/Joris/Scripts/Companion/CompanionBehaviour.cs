@@ -43,8 +43,6 @@ public class CompanionBehaviour : MonoBehaviour
     NavMeshAgent _Companion;
     Animator _Animator;
 
-    public GameObject EndScreen;
-
     private void Awake()
     {
         _Player = FindObjectOfType<PlayerBehaviour>();
@@ -219,12 +217,6 @@ public class CompanionBehaviour : MonoBehaviour
                     isTrackingPlayer = false;
                     _Companion.ResetPath();
                     _Companion.stoppingDistance = 0.5f;
-                }
-
-                if (Checkpoint[pointInArray] == Checkpoint[checkPointAmount-1])
-                {
-                    yield return new WaitForSeconds(4f);
-                    EndScreen.SetActive(true);
                 }
 
                 isLatched = true;

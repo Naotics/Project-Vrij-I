@@ -13,7 +13,7 @@ public class RoamingDots : MonoBehaviour
     public GameObject EnemyPrefab;
     public float timeTillNextSpawn;
 
-    private float time;
+    private float time = 15;
 
     PlayerBehaviour _Player;
     CompanionBehaviour _Companion;

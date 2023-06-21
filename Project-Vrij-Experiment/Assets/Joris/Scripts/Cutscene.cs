@@ -6,6 +6,9 @@ public class Cutscene : MonoBehaviour
 {
     public GameObject CutsceneHolder;
     CompanionBehaviour _companionBehaviour;
+
+    public bool lastcutscene;
+    public GameObject clock;
     private void Awake()
     {
        _companionBehaviour = FindObjectOfType<CompanionBehaviour>();
@@ -17,6 +20,9 @@ public class Cutscene : MonoBehaviour
         {
             CutsceneHolder.SetActive(true);
             _companionBehaviour.cutscene = true;
+
+            if (lastcutscene)
+                StartCoroutine(Timer());
         }
     }
 
@@ -27,5 +33,11 @@ public class Cutscene : MonoBehaviour
             CutsceneHolder.SetActive(false);
             _companionBehaviour.cutscene = false;
         }
+    }
+
+    IEnumerator Timer()
+    {
+        yield return new WaitForSeconds(5f);
+        clock.SetActive(true);
     }
 }

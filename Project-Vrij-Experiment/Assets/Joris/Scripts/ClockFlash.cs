@@ -18,7 +18,6 @@ public class ClockFlash : MonoBehaviour
 
     IEnumerator Flicker()
     {
-        ClockTekst.SetActive(true);
         yield return new WaitForSeconds(1);
         ClockTekst.SetActive(false);
         yield return new WaitForSeconds(0.4f);
