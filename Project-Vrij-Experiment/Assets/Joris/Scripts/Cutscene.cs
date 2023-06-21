@@ -32,6 +32,7 @@ public class Cutscene : MonoBehaviour
         {
             CutsceneHolder.SetActive(false);
             _companionBehaviour.cutscene = false;
+            _companionBehaviour.isLatched = false;
         }
     }
 

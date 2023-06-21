@@ -30,7 +30,7 @@ public class CompanionBehaviour : MonoBehaviour
     public float SearchingRange;
 
     private bool isMoving;
-    private bool isLatched;
+    public bool isLatched;
     private bool isTrackingPlayer;
     private bool changeDirections;
     private bool WalkingDelay;
@@ -162,8 +162,8 @@ public class CompanionBehaviour : MonoBehaviour
 
             _Companion.speed = panickedSpeed;
 
-            //if (isPanicked)
-                //pointInArray -= 1;
+            if (isPanicked)
+                pointInArray -= 1;
 
             Vector3 newDestination = GetClosestDot(Dots).transform.position;
             _Companion.SetDestination(newDestination);
@@ -192,6 +192,7 @@ public class CompanionBehaviour : MonoBehaviour
 
     IEnumerator CheckPathEnd()
     {
+        Debug.Log("checkfinish");
         yield return new WaitForSeconds(0.2f);
 
         if (!isLatched)
@@ -216,7 +217,7 @@ public class CompanionBehaviour : MonoBehaviour
                 {
                     isTrackingPlayer = false;
                     _Companion.ResetPath();
-                    _Companion.stoppingDistance = 0.5f;
+                    _Companion.stoppingDistance = 0.2f;
                 }
 
                 isLatched = true;
@@ -248,8 +249,10 @@ public class CompanionBehaviour : MonoBehaviour
         _Companion.SetDestination(newDestination);
 
         if (_Companion.pathPending)
+        {
             StopAllCoroutines();
-        StartCoroutine(CheckPathEnd());
+            StartCoroutine(CheckPathEnd());
+        }
     }
 
     void MoveToNextCheckPoint()
@@ -275,6 +278,7 @@ public class CompanionBehaviour : MonoBehaviour
 
     void MoveThroughArrayCheckPoints()
     {
+        Debug.Log("AddOne");
         pointInArray += 1;
     }
 
@@ -298,8 +302,10 @@ public class CompanionBehaviour : MonoBehaviour
             _Companion.SetDestination(newDestination);
 
             if (_Companion.pathPending)
+            {
                 StopAllCoroutines();
                 StartCoroutine(CheckPathEnd());
+            }
         }
     }
 
