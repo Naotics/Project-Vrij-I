@@ -34,6 +34,7 @@ public class CompanionBehaviour : MonoBehaviour
     private bool isTrackingPlayer;
     private bool changeDirections;
     private bool WalkingDelay;
+    [HideInInspector] public bool cutscene;
 
     [HideInInspector] public bool isWalking;
 
@@ -73,6 +74,7 @@ public class CompanionBehaviour : MonoBehaviour
         }
 
         pointInArray = 0;
+        _Companion.enabled = false;
     }
 
     void Update()
@@ -88,12 +90,12 @@ public class CompanionBehaviour : MonoBehaviour
     void Idling()
     {
         isWalking = true;
-
         _Animator.Play("Idle");
 
         if (Vector3.Distance(_Player.transform.position, transform.position) < SearchingRange)
         {
             walking = WalkingBehaviour.Walking;
+            _Companion.enabled = true;
         }
     }
 
@@ -125,7 +127,7 @@ public class CompanionBehaviour : MonoBehaviour
 
         _Animator.Play("Walk");
 
-        if (Vector3.Distance(_Player.transform.position, transform.position) > SearchingRange /*&& isPanicked*/)
+        if (Vector3.Distance(_Player.transform.position, transform.position) > SearchingRange && !cutscene)
         {
             walking = WalkingBehaviour.Roaming;
             _Companion.ResetPath();
@@ -162,8 +164,8 @@ public class CompanionBehaviour : MonoBehaviour
 
             _Companion.speed = panickedSpeed;
 
-            if (isPanicked)
-                pointInArray -= 1;
+            //if (isPanicked)
+                //pointInArray -= 1;
 
             Vector3 newDestination = GetClosestDot(Dots).transform.position;
             _Companion.SetDestination(newDestination);
@@ -280,9 +282,6 @@ public class CompanionBehaviour : MonoBehaviour
     void MoveThroughArrayCheckPoints()
     {
         pointInArray += 1;
-
-        if (pointInArray == checkPointAmount)
-            pointInArray = 0;
     }
 
     void SwitchDirection()
